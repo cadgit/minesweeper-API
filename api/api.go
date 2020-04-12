@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 
+	"minesweeper-API/minesweeper"
 	"minesweeper-API/types"
 )
 
@@ -37,5 +38,6 @@ func Router(services *Services) *mux.Router {
 	// API Routes
 	r := mux.NewRouter()
 	r.HandleFunc("/healthcheck", services.healthcheck).Methods("GET")
+	r.HandleFunc("/game", services.createGame).Methods("POST")
 	return r
 }
