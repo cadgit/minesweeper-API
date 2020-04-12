@@ -21,7 +21,3 @@ RUN go build -o builds/minesweeper_api main/main.go
 EXPOSE 8080
 
 CMD ./builds/minesweeper_api
-
-#CMD tail -f /dev/null
-
-
