@@ -7,7 +7,7 @@ import (
 )
 
 // Struct used to handle all the phases of a game.
-// This is an immplementation fo the interface types.game_types.GameService
+// This is an implementation fo the interface types.game_types.GameService
 type GameService struct {
 	Store types.GameStore
 }
@@ -75,4 +75,24 @@ func (s *GameService) Start(name string) (*types.Game, error) {
 	err = s.Store.Update(game)
 	fmt.Printf("%#v\n", game.Grid)
 	return game, err
+}
+
+/*
+	This function will handle the process of perform the action of select a specific cell in the board.
+ */
+func (s *GameService) Click(name string, i, j int) (*types.Game, error) {
+	game, err := s.Store.GetByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := clickCell(game, i, j); err != nil {
+		return nil, err
+	}
+
+	if err := s.Store.Update(game); err != nil {
+		return nil, err
+	}
+
+	return game, nil
 }

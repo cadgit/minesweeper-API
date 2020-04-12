@@ -2,11 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"minesweeper-API/types"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"minesweeper-API/types"
+	"net/http"
 )
 
 /*
@@ -21,13 +20,13 @@ responses:
   201: Game created
   400: Invalid json
   500: server error
-*/
+ */
 func (s *Services) createGame(w http.ResponseWriter, r *http.Request) {
 	var game types.Game
 
 	log := s.logger.WithFields(logrus.Fields{
-		"s":      "game",
-		"method": "create",
+		"s": "game",
+		"method":  "create",
 	})
 
 	errorParseData := json.NewDecoder(r.Body).Decode(&game)
@@ -60,7 +59,7 @@ method: POST
 responses:
   200: OK
   500: server error
-*/
+ */
 func (s *Services) startGame(respWriter http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	name := vars["name"]
@@ -77,5 +76,64 @@ func (s *Services) startGame(respWriter http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	Success(game, http.StatusOK).Send(respWriter)
+	game2 := *game
+	game2.Grid = nil
+
+	Success(game2, http.StatusOK).Send(respWriter)
+}
+
+/*
+title: cell click
+
+This function will handle the request related to perform the action of select a
+specific cell in the board.
+
+path: /game/{name}/click
+method: POST
+responses:
+  200: OK
+  400: Invalid json
+  500: server error
+ */
+func (s *Services) clickCell(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	name := vars["name"]
+
+	log := s.logger.WithFields(logrus.Fields{
+		"service": "game",
+		"method":  "click",
+	})
+
+	var cellPos struct {
+		Row int `json:"row"`
+		Col int `json:"col"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&cellPos); err != nil {
+		log.Error(err)
+		ErrInvalidJSON.Send(w)
+		return
+	}
+
+	game, err := s.GameService.Click(name, cellPos.Row, cellPos.Col)
+	if err != nil {
+		log.WithField("err", err).Error("cannot click cell")
+		ErrInternalServer.Send(w)
+		return
+	}
+	cell := game.Grid[cellPos.Row][cellPos.Col]
+
+	if game.Status != "over" && game.Status != "won" {
+		game.Grid = nil
+	}
+
+	var result struct {
+		Cell types.Cell
+		Game types.Game
+	}
+
+	result.Cell = cell
+	result.Game = *game
+
+	Success(&result, http.StatusOK).Send(w)
 }

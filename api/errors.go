@@ -8,6 +8,7 @@ import (
 var (
 	ErrInternalServer = Error{StatusCode: http.StatusInternalServerError, Type: "server_error", Message: "Internal server error. The error has been logged and we are working on it"}
 	ErrInvalidJSON    = Error{StatusCode: http.StatusBadRequest, Type: "invalid_json", Message: "Invalid or malformed JSON"}
+	ErrAlreadyExists  = Error{StatusCode: http.StatusConflict, Type: "already_exists", Message: "Another resource has the same value as this field"}
 )
 
 /*
