@@ -1,6 +1,8 @@
 package api
 
 import (
+	"minesweeper-API/minesweeper"
+	"minesweeper-API/persistence"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -18,6 +20,10 @@ type Services struct {
 func Start(log *logrus.Logger) error {
 	services := Services{
 		logger: log,
+		GameService: &minesweeper.GameService{
+			Logger: log,
+			Store: persistence.NewGameStore(log),
+		},
 	}
 
 	// API Routes

@@ -76,10 +76,7 @@ func (s *Services) startGame(respWriter http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	game2 := *game
-	game2.Grid = nil
-
-	Success(game2, http.StatusOK).Send(respWriter)
+	Success(game, http.StatusOK).Send(respWriter)
 }
 
 /*

@@ -2,7 +2,7 @@ package minesweeper
 
 import (
 	"errors"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"minesweeper-API/types"
 )
 
@@ -10,6 +10,7 @@ import (
 // This is an implementation fo the interface types.game_types.GameService
 type GameService struct {
 	Store types.GameStore
+	Logger *logrus.Logger
 }
 
 // Values used as default.
@@ -73,7 +74,7 @@ func (s *GameService) Start(name string) (*types.Game, error) {
 
 	game.Status = "started"
 	err = s.Store.Update(game)
-	fmt.Printf("%#v\n", game.Grid)
+	s.Logger.Infof("%#v\n", game.Grid)
 	return game, err
 }
 

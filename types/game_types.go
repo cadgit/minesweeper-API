@@ -25,7 +25,7 @@ type Game struct {
 	Mines  int        `json:"mines"`
 	Status string     `json:"status"`
 	Grid   []CellGrid `json:"grid,omitempty"`
-	Clicks int        `json:"-"`
+	Clicks int        `json:"clicks"`
 }
 
 /*
