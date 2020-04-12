@@ -2,6 +2,7 @@ package minesweeper
 
 import (
 	"errors"
+	"fmt"
 	"minesweeper-API/types"
 )
 
@@ -23,7 +24,7 @@ const (
 /*
 	Handles all the process related to create a specific game
 	Setup the values received as parameters or it will use default values.
-*/
+ */
 func (s *GameService) Create(game *types.Game) error {
 	if game.Name == "" {
 		return errors.New("no Game name")
@@ -57,4 +58,21 @@ func (s *GameService) Create(game *types.Game) error {
 
 	err := s.Store.Insert(game)
 	return err
+}
+
+/*
+	This function will handle the process of perform the configuration of a new game previously created.
+ */
+func (s *GameService) Start(name string) (*types.Game, error) {
+	game, err := s.Store.GetByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	buildBoard(game)
+
+	game.Status = "started"
+	err = s.Store.Update(game)
+	fmt.Printf("%#v\n", game.Grid)
+	return game, err
 }

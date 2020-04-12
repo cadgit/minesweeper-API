@@ -29,7 +29,7 @@ type Game struct {
 }
 
 /*
-	Define the function should be implemented by any service
+	Defines the responsibility of a service
 	that it will provide support to the process of handle the different
 	phases of a game.
  */
@@ -37,4 +37,15 @@ type GameService interface {
 	Create(game *Game) error
 	Start(name string) (*Game, error)
 	Click(name string, i, j int) (*Game, error)
+}
+
+/*
+	Defines the responsibility of a service that
+	it will provide support to the process of handle
+	the persistence of the data related to a game.
+ */
+type GameStore interface {
+	Insert(game *Game) error
+	Update(game *Game) error
+	GetByName(name string) (*Game, error)
 }

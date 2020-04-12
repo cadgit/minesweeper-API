@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+/*
+	This struct represent the data that the different endpoint returns to the
+	clients.
+ */
 type Response struct {
 	Success bool        `json:"success"`
 	Status  int         `json:"status,omitempty"`
